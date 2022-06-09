@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    
+    <div>
+        <input type="text" placeholder="Entry Product No" id="no">
+        <input type="text" placeholder="Entry Product Nmae" id="name">
+        <input type="number" placeholder="Entry Product Price" id="price">
+        <input type="text" placeholder="Entry Product Category"id="category">
+
+        <button id="btnAdd">Set Data</button>
+        <button id="btnQuery">Get Data</button>
+        <button id="btnDel">Delete Data</button>
+
+        <div id="demo"></div>
+        <div id="demo2"></div>
+        <div id="demo3"></div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need  
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js"; //CDN 
+        import { getFirestore, setDoc, doc, getDocs, collection, onSnapshot, query, deleteDoc } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+
+        // import { initializeApp } from "./firebase/app"; //好像有點危險? 5 high severity vulnerabilities // 引用位置error =__=+  
+        // import {  getFirestore, setDoc, doc } from "./firebase/firestore"; 
+        
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration(組態設定)
+        const firebaseConfig = {
+          apiKey: "AIzaSyBTuiDnu7xjPramOXnx21zOfgllyw48lDg",
+          authDomain: "myapp-be722.firebaseapp.com",
+          projectId: "myapp-be722",
+          storageBucket: "myapp-be722.appspot.com",
+          messagingSenderId: "692005619954",
+          appId: "1:692005619954:web:f289501efa8d89886b686b"
+        };
+      
+        // Initialize Firebase (初始化應用程式)
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+
+        const no = document.getElementById('no');
+        const name = document.getElementById('name');
+        const price = document.getElementById('price');        
+        const category = document.getElementById('category');
+
+        const btnAdd = document.getElementById('btnAdd');
+
+        btnAdd.onclick = () => {
+            addData(); //要記得把規則改成true才可寫入
+            getDataListen();
+        }
+
+        btnQuery.onclick = () =>{
+            // console.log('---');
+            getData();
+        }
+
+        btnDel.onclick = () =>{            
+            delData();
+        }
+
+        // async function addData(){
+        //     await setDoc(doc(db, 'Product', no.value),{
+        //         name:name.value,
+        //         price:price.value * 1, //偷吃步的轉型
+        //         category:category.value,
+        //     }).then(function(){
+        //         demo.innerHTML = no.value + '寫入成功';
+        //         no.value = '';
+        //         name.value = '';
+        //         price.value = '';
+        //         category.value = '';
+        //     });
+        // }
+
+        const addData = async () => {
+            await setDoc(doc(db, 'Product', no.value),{
+                name:name.value,
+                price:price.value * 1, //偷吃步的轉型
+                category:category.value,
+            }).then(function(){
+                demo.innerHTML = no.value + '寫入成功';
+                no.value = '';
+                name.value = '';
+                price.value = '';
+                category.value = '';
+            });
+        }
+
+        //讀取資料
+        const getData = async () => {
+           demo2.innerHTML = '';
+           const querySnapshot = await getDocs(collection(db, 'Product')); //查詢結果物件
+
+           console.log(querySnapshot);
+
+           querySnapshot.forEach((doc) => {
+               demo2.innerHTML += doc.id + '</br>'
+               + doc.data()['name'] + '</br>'
+               + doc.data()['price'] + '</br>'
+               + doc.data()['category'] + '<hr>';
+            
+           });
+
+        }
+
+        //監聽資料
+        const getDataListen = () => {
+            const q = query(collection(db, 'Product')); 
+            
+            const myListen = onSnapshot(q, (querySnapshot) => {
+            
+                demo3.innerHTML = '';
+
+                querySnapshot.forEach((doc) => {
+                demo3.innerHTML += doc.id + '</br>'
+                + doc.data()['name'] + '</br>'
+                + doc.data()['price'] + '</br>'
+                + doc.data()['category'] + '<hr>';
+                
+                });
+            });
+        }
+
+        //CURD：create、update、read、delete
+
+        //刪除
+        const delData = async () => {
+            
+            await deleteDoc(doc(db, 'Product', no.value))
+            .then(() => {
+                alert(no.value + '已刪除' );
+                no.value = '';
+            });  
+        }
+
+      </script>
+
+</body>
+</html>
