@@ -161,28 +161,19 @@
 
 
         //https://firebase.google.com/docs/firestore/manage-data/add-data#update-data
-        //更新，失敗一直有問題....
+        //更新
         const updateData = async () => {
 
-            console.log(no.value);
-            console.log(name.value);
-            console.log(price.value);
-            console.log(category.value);
-            
             const myUpdate = doc(db,'Product', no.value);
                     
-            await updateDoc(myUpdate, {
-                name:name.value,
+            await updateDoc(myUpdate,{
+                name:name.vlaue,
                 price:price.value * 1, 
                 category:category.value,                
-            }).then(() => {
-                alert(no.value + '已更新' );
+            }).then(() =>{
+                alert(no.value + '已更新');
                 no.value = '';
-                name.value = '';
-                price.value = '';
-                category.value = '';
-            });  
-        
+            });
             // .then(() => {
             //     demo.innerHTML = no.value + '更新成功';
             //     no.value = '';
