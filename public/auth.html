@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1> Login / Logout / Sign Up</h1>
+       <input type="email" id="email" placeholder="Email"><br>
+        <input type="password" id="pwd" placeholder="Password"><br>
+        <button id="btnLogin">登入</button>
+        <button id="btnSignup">註冊</button>
+        <button id="btnLogout" style="display:none">登出</button>
+       
+        <div id="demo"></div>
+        <div id="info"></div>
+    
+    
+    
+    <script type="module">
+     
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js"; //CDN 
+        import {getAuth, createUserWithEmailAndPassword  } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js";
+
+       
+        // Your web app's Firebase configuration(組態設定)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTuiDnu7xjPramOXnx21zOfgllyw48lDg",
+            authDomain: "myapp-be722.firebaseapp.com",
+            projectId: "myapp-be722",
+            storageBucket: "myapp-be722.appspot.com",
+            messagingSenderId: "692005619954",
+            appId: "1:692005619954:web:f289501efa8d89886b686b"
+        };
+        
+        // Initialize Firebase (初始化應用程式)
+        const app = initializeApp(firebaseConfig);
+
+        const auth=getAuth(app);
+
+        const email=document.getElementById('email');
+        const pwd=document.getElementById('pwd');
+        const btnLogin=document.getElementById('btnLogin');
+        const btnSignup=document.getElementById('btnSignup');
+        const btnLogout=document.getElementById('btnLogout');
+        const demo=document.getElementById('demo');
+        const info=document.getElementById('info');
+
+        //註冊
+        btnSignup.addEventListener('click', e=>{
+            createUserWithEmailAndPassword(auth, email.value, pwd.value)
+            .then((userCredntial)=>{
+                const uset = userCredntial.user;
+
+                console.log(userCredntial);
+
+                demo.innerHTML = user.email + '註冊成功';
+            }).catch((error)=>{
+
+                console.log(error);
+
+                const errcode = error.code;
+                const msg = error.massage;
+
+                demo.innerHTML = '錯誤訊息' + msg + '<br>';
+            });
+        })
+
+    </script>    
+
+</body>
+</html>
